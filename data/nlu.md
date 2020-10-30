@@ -32,6 +32,7 @@
 - good morning
 - good evening
 - dear sir
+- hola
 
 ## intent:restaurant_search
 - i'm looking for a place to eat
@@ -237,6 +238,11 @@
 ## synonym:kochi
 - Cochin
 - cochin
+
+## synonym:prayagraj
+- Allahabad 
+- allahabad 
+- Prayagraj
 
 ## synonym:vasai-virar city
 - virar

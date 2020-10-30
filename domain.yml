@@ -1,6 +1,3 @@
-session_config:
-  session_expiration_time: 60
-  carry_over_slots_to_new_session: false
 intents:
 - send_mail
 - restaurant_search
@@ -36,7 +33,7 @@ slots:
     influence_conversation: true
   price:
     type: text
-    influence_conversation: true    
+    influence_conversation: true
 responses:
   utter_ask_cuisine:
   - buttons:
@@ -74,21 +71,21 @@ responses:
   - text: you have entered incorrect email
   utter_if_user_wants_email:
   - buttons:
-    - payload: /send_mail{"receive_email":true}
+    - payload: /send_mail{{"receive_email":true}}
       title: Yes
-    - payload: /send_mail{"receive_email":false}
+    - payload: /send_mail{{"receive_email":false}}
       title: No
     text: Do you want the list of top 10 restaurants to be sent over email?
-    
+
   utter_ask_price:
   - buttons:
-    - payload: high
-      title: high
-    - payload: mid
-      title: mid
     - payload: low
-      title: low    
-    text: What is your Budget? 
+      title: Lesser than Rs. 300
+    - payload: mid
+      title: Rs. 300 to 700
+    - payload: high
+      title: More than 700
+    text: What is your Budget?
 actions:
 - action_search_restaurants
 - utter_ask_price

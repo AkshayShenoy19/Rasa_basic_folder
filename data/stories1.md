@@ -15,12 +15,10 @@
     - slot{"price": "high"}    
     - action_search_restaurants   
     - utter_if_user_wants_email
-* send_mail{"receive_email": true}    
-    
+* send_mail{"receive_email": true}  
     - slot{"receive_email": true}
     - utter_ask_email   
 * send_mail{"email": "sdhyg@gmail.com"}   
-    
     - slot{"email": "sdhyg@gmail.com"}
     - check_email
     - slot{"flag_email": true}
@@ -43,10 +41,8 @@
 * restaurant_search{"price": "high"}
     - slot{"price": "high"}    
     - action_search_restaurants
-
     - utter_if_user_wants_email
-* send_mail{"receive_email": true}   
-    
+* send_mail{"receive_email": true}
     - slot{"receive_email": true}       
     - utter_ask_email
 * send_mail{"email": "akki_S89gmail.com"}    
@@ -56,11 +52,6 @@
     - utter_if_user_wants_email
 * send_mail{"receive_email": "No"}    
     - slot{"receive_email": "No"}  
-    
-    
-    
-    
-
     - utter_goodbye
     - export
 
