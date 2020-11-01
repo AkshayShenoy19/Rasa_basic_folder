@@ -123,6 +123,11 @@
 - [aks@gmailcom](email)
 - [fvjn3.gcom](email)
 - [akki123@bing.com](email)
+- [xyz@sth.edu](email)
+- [jddk.2jmd@kdl.co.in](email)
+- [akkiSh@gmail.edu](email)
+- [akkiSh@gmail.ai](email)
+- [akkiSh@gmail.co.in](email)
 
 ## synonym:kolkata
 - calcutta

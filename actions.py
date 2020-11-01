@@ -118,6 +118,10 @@ class CheckEmail(Action):
 
         if re.match(r'[a-zA-Z0-9]+@[a-zA-Z]+\.[a-z]+', e):
             return [SlotSet('flag_email', True)]
+        if re.match(r'[a-zA-Z0-9]+@[a-zA-Z]+\.[a-z]+\.[a-z]+', e):
+            return [SlotSet('flag_email', True)]
+        if re.match(r'[a-zA-Z0-9]+\.[a-zA-Z0-9]+@[a-zA-Z]+\.[a-z]+\.[a-z]+',e):
+            return [SlotSet('flag_email', True)]
         else:
             return [SlotSet('flag_email', False)]
 
