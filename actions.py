@@ -31,44 +31,47 @@ class ActionSearchRestaurants(Action):
         lon = d1["location_suggestions"][0]["longitude"]
         cuisines_dict = {'bakery': 5, 'chinese': 25, 'cafe': 30, 'italian': 55, 'biryani': 7, 'north indian': 50,
                          'south indian': 85}
-        results = zomato.restaurant_search("", lat, lon, str(cuisines_dict.get(cuisine)), 20)
-        d = json.loads(results)
-        r = " "
 
-        d2 = d['restaurants']
+        results1 = zomato.modrestaurant_search("", lat, lon, str(cuisines_dict.get(cuisine)), 0, 20)
+        d11 = json.loads(results1)
         df1 = pd.DataFrame([{'restaurant_name': x['restaurant']['name'],
                              'restaurant_rating': x['restaurant']['user_rating']['aggregate_rating'],
                              'restaurant_address': x['restaurant']['location']['address'],
-                             'budget_for2people': x['restaurant']['average_cost_for_two']} for x in d2])
+                             'budget_for2people': x['restaurant']['average_cost_for_two']} for x in d11['restaurants']])
 
-        if priceRange == 'low':
-            x = df1[df1['budget_for2people'] <= 300]
-        elif priceRange == 'mid':
-            x = df1[(df1['budget_for2people'] > 300) & (df1['budget_for2people'] <= 700)]
-        elif priceRange == 'high':
-            x = df1[df1['budget_for2people'] > 700]
+        results2 = zomato.modrestaurant_search("", lat, lon, str(cuisines_dict.get(cuisine)), 20, 20)
+        d12 = json.loads(results2)
+        df2 = pd.DataFrame([{'restaurant_name': x['restaurant']['name'],
+                             'restaurant_rating': x['restaurant']['user_rating']['aggregate_rating'],
+                             'restaurant_address': x['restaurant']['location']['address'],
+                             'budget_for2people': x['restaurant']['average_cost_for_two']} for x in d12['restaurants']])
 
-        x = x.sort_values(by=['restaurant_rating'], ascending=False).head(5)
-        restaurant_name = x['restaurant_name'].tolist()
-        restaurant_rating = x['restaurant_rating'].tolist()
-        restaurant_address = x['restaurant_address'].tolist()
-        budget_for2people = x['budget_for2people'].tolist()
+        results3 = zomato.modrestaurant_search("", lat, lon, str(cuisines_dict.get(cuisine)), 40, 20)
+        d13 = json.loads(results3)
+        df3 = pd.DataFrame([{'restaurant_name': x['restaurant']['name'],
+                             'restaurant_rating': x['restaurant']['user_rating']['aggregate_rating'],
+                             'restaurant_address': x['restaurant']['location']['address'],
+                             'budget_for2people': x['restaurant']['average_cost_for_two']} for x in d13['restaurants']])
 
-        test = zip(restaurant_name, restaurant_rating, restaurant_address, budget_for2people)
+        results4 = zomato.modrestaurant_search("", lat, lon, str(cuisines_dict.get(cuisine)), 60, 20)
+        d14 = json.loads(results4)
+        df4 = pd.DataFrame([{'restaurant_name': x['restaurant']['name'],
+                             'restaurant_rating': x['restaurant']['user_rating']['aggregate_rating'],
+                             'restaurant_address': x['restaurant']['location']['address'],
+                             'budget_for2people': x['restaurant']['average_cost_for_two']} for x in d14['restaurants']])
 
-        test = list(test)
+        results5 = zomato.modrestaurant_search("", lat, lon, str(cuisines_dict.get(cuisine)), 80, 20)
+        d15 = json.loads(results5)
+        df5 = pd.DataFrame([{'restaurant_name': x['restaurant']['name'],
+                             'restaurant_rating': x['restaurant']['user_rating']['aggregate_rating'],
+                             'restaurant_address': x['restaurant']['location']['address'],
+                             'budget_for2people': x['restaurant']['average_cost_for_two']} for x in d15['restaurants']])
 
-        if len(restaurant_name) == 0:
-            dispatcher.utter_message("no results")
-        else:
-            response = ""
-            dispatcher.utter_message("Showing you top rated restaurants: \n")
-            for v in test:
-                r = ""
-                r = r + str(v[0]) + ' in ' + str(
-                    v[2]) + ' and Average price for two people is: ' + str(v[3]) + ' also Zomato user rating is ' + str(
-                    v[1]) + '\n'
-                response = response + r
+        frames = [df1, df2, df3, df4, df5]
+        df = pd.concat(frames).reset_index(drop=True)
+
+        emailClass = EmailRestaurants()
+        response = emailClass.filterprice(priceRange,df,5)
 
         dispatcher.utter_message(response)
         return [SlotSet('location', loc)]
@@ -135,62 +138,95 @@ class SendEmail(Action):
         cuisine = tracker.get_slot('cuisine')
         location_detail = zomato.get_location(loc, 1)
         d1 = json.loads(location_detail)
+
         lat = d1["location_suggestions"][0]["latitude"]
         lon = d1["location_suggestions"][0]["longitude"]
         cuisines_dict = {'bakery': 5, 'chinese': 25, 'cafe': 30, 'italian': 55, 'biryani': 7, 'north indian': 50,
                          'south indian': 85}
-        results = zomato.restaurant_search("", lat, lon, str(cuisines_dict.get(cuisine)), 20)
-        d1 = json.loads(results)
 
-        def filterprice(pricerange):
-            d = d1['restaurants']
-            df1 = pd.DataFrame([{'restaurant_name': x['restaurant']['name'],
-                                 'restaurant_rating': x['restaurant']['user_rating']['aggregate_rating'],
-                                 'restaurant_address': x['restaurant']['location']['address'],
-                                 'budget_for2people': x['restaurant']['average_cost_for_two']} for x in d])
+        results1 = zomato.modrestaurant_search("", lat, lon, str(cuisines_dict.get(cuisine)), 0, 20)
+        d11 = json.loads(results1)
+        df1 = pd.DataFrame([{'restaurant_name': x['restaurant']['name'],
+                             'restaurant_rating': x['restaurant']['user_rating']['aggregate_rating'],
+                             'restaurant_address': x['restaurant']['location']['address'],
+                             'budget_for2people': x['restaurant']['average_cost_for_two']} for x in d11['restaurants']])
 
-            if pricerange == 'low':
-                x = df1[df1['budget_for2people'] <= 300]
-            elif pricerange == 'mid':
-                x = df1[(df1['budget_for2people'] > 300) & (df1['budget_for2people'] <= 700)]
-            elif pricerange == 'high':
-                x = df1[df1['budget_for2people'] > 700]
+        results2 = zomato.modrestaurant_search("", lat, lon, str(cuisines_dict.get(cuisine)), 20, 20)
+        d12 = json.loads(results2)
+        df2 = pd.DataFrame([{'restaurant_name': x['restaurant']['name'],
+                             'restaurant_rating': x['restaurant']['user_rating']['aggregate_rating'],
+                             'restaurant_address': x['restaurant']['location']['address'],
+                             'budget_for2people': x['restaurant']['average_cost_for_two']} for x in d12['restaurants']])
 
-            x = x.sort_values(by=['restaurant_rating']).head(10)
-            restaurant_name = x['restaurant_name'].tolist()
-            restaurant_rating = x['restaurant_rating'].tolist()
-            restaurant_address = x['restaurant_address'].tolist()
-            budget_for2people = x['budget_for2people'].tolist()
+        results3 = zomato.modrestaurant_search("", lat, lon, str(cuisines_dict.get(cuisine)), 40, 20)
+        d13 = json.loads(results3)
+        df3 = pd.DataFrame([{'restaurant_name': x['restaurant']['name'],
+                             'restaurant_rating': x['restaurant']['user_rating']['aggregate_rating'],
+                             'restaurant_address': x['restaurant']['location']['address'],
+                             'budget_for2people': x['restaurant']['average_cost_for_two']} for x in d13['restaurants']])
 
-            line = zip(restaurant_name, restaurant_rating, restaurant_address, budget_for2people)
-            line = list(line)
+        results4 = zomato.modrestaurant_search("", lat, lon, str(cuisines_dict.get(cuisine)), 60, 20)
+        d14 = json.loads(results4)
+        df4 = pd.DataFrame([{'restaurant_name': x['restaurant']['name'],
+                             'restaurant_rating': x['restaurant']['user_rating']['aggregate_rating'],
+                             'restaurant_address': x['restaurant']['location']['address'],
+                             'budget_for2people': x['restaurant']['average_cost_for_two']} for x in d14['restaurants']])
 
-            if len(restaurant_name) == 0:
-                dispatcher.utter_message("No results to mail")
-                return None
-            else:
-                for v in line:
-                    r = ""
-                    r = r + str(v[0]) + ' in ' + str(
-                        v[2]) + ' and Average price for two people is: ' + str(
-                        v[3]) + ' also Zomato user rating is ' + str(
-                        v[1]) + '\n' + '\n'
-                    return r
+        results5 = zomato.modrestaurant_search("", lat, lon, str(cuisines_dict.get(cuisine)), 80, 20)
+        d15 = json.loads(results5)
+        df5 = pd.DataFrame([{'restaurant_name': x['restaurant']['name'],
+                             'restaurant_rating': x['restaurant']['user_rating']['aggregate_rating'],
+                             'restaurant_address': x['restaurant']['location']['address'],
+                             'budget_for2people': x['restaurant']['average_cost_for_two']} for x in d15['restaurants']])
 
-        def mail(x, y):
-            EMAIL_ADDRESS = 'dellinteli58@gmail.com'
-            EMAIL_PASSWORD = '@password123'
+        frames = [df1, df2, df3, df4, df5]
+        df = pd.concat(frames).reset_index(drop=True)
 
-            msg = EmailMessage()
-            msg['Subject'] = 'List of top restaurants'
-            msg['From'] = EMAIL_ADDRESS
-            msg['To'] = y
-
-            msg.set_content(filterprice(x))
-            with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-                smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
-                smtp.send_message(msg)
-
-        mail(p, e)
+        mailClass = EmailRestaurants()
+        mailClass.mail(p, e, df)
 
         dispatcher.utter_message("-----" + 'List of restaurants has been send to ' + e)
+
+class EmailRestaurants:
+
+    def mail(self, x, y, dataFrame):
+        EMAIL_ADDRESS = 'dellinteli58@gmail.com'
+        EMAIL_PASSWORD = '@password123'
+
+        msg = EmailMessage()
+        msg['Subject'] = 'List of top restaurants'
+        msg['From'] = EMAIL_ADDRESS
+        msg['To'] = y
+
+        msg.set_content(self.filterprice(x, dataFrame,10))
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+            smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+            smtp.send_message(msg)
+
+    def filterprice(self, pricerange, dataFrame, lim):
+        if pricerange == 'low':
+            x = dataFrame[dataFrame['budget_for2people'] <= 300]
+        elif pricerange == 'mid':
+            x = dataFrame[(dataFrame['budget_for2people'] > 300) & (dataFrame['budget_for2people'] <= 700)]
+        elif pricerange == 'high':
+            x = dataFrame[dataFrame['budget_for2people'] > 700]
+
+        x = x.sort_values(by=['restaurant_rating']).head(lim)
+        restaurant_name = x['restaurant_name'].tolist()
+        restaurant_rating = x['restaurant_rating'].tolist()
+        restaurant_address = x['restaurant_address'].tolist()
+        budget_for2people = x['budget_for2people'].tolist()
+
+        line = zip(restaurant_name, restaurant_rating, restaurant_address, budget_for2people)
+        line = list(line)
+
+        if len(restaurant_name) == 0:
+            return "No Restaurants Found..!!!"
+        else:
+            resp = ""
+            for v in line:
+                r = ""
+                r = r + str(v[0]) + ' in ' + str(v[2]) + ' and Average price for two people is: ' \
+                    + str(v[3]) + ' also Zomato user rating is ' + str(v[1]) + '\n' + '\n'
+                resp = resp + r
+            return resp
