@@ -101,7 +101,7 @@ Spacy==2.2.4
 Other program installed version details can be found in the requirements.txt file.
 
 # Authors 
-Kalpesh Mhase and Akshay Shenoy
+Akshay Shenoy and Kalpesh 
 
 # Issues
 -[ ] Nagar is detecting as a city and Banglore location restaurants are showing.
